@@ -33,9 +33,6 @@ class MoviesProvider extends ChangeNotifier {
     errorMessage = '';
     notifyListeners();
 
-    // Retardo temporal para pruebas de QA (captura de pantalla de carga)
-    await Future.delayed(const Duration(seconds: 4));
-
     final url = Uri.https(_baseUrl, '3/movie/now_playing', {
       'api_key': _apiKey,
       'language': _language,
@@ -74,12 +71,5 @@ class MoviesProvider extends ChangeNotifier {
     } finally {
       notifyListeners();
     }
-  }
-
-  void simulateNetworkError() {
-    state = MovieLoadingState.error;
-    errorMessage =
-        'Fallo de conexión: Sin acceso al host remoto api.themoviedb.org (Simulación Offline).';
-    notifyListeners();
   }
 }

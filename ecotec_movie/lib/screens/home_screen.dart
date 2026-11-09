@@ -17,11 +17,6 @@ class HomeScreen extends StatelessWidget {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.signal_wifi_off_rounded, color: Colors.redAccent),
-            tooltip: 'Simular error de red (QA)',
-            onPressed: () => moviesProvider.simulateNetworkError(),
-          ),
-          IconButton(
             icon: const Icon(Icons.search_outlined),
             onPressed: () {},
           ),
