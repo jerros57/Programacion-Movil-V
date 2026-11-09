@@ -13,27 +13,26 @@ class MovieSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 500,
+      height: 270,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Text(
               'Populares',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
-          SizedBox(
-            height: 190,
+          Expanded(
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: movies.length,
               itemBuilder: (_, int index) {
                 final movie = movies[index];
                 return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   width: 130,
-                  height: 190,
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     children: [
                       GestureDetector(

@@ -1,35 +1,55 @@
 import 'package:card_swiper/card_swiper.dart';
+import 'package:ecotec_movie/models/movie.dart';
 import 'package:flutter/material.dart';
 
 class CardSwiper extends StatelessWidget {
+  final List<Movie> movies;
+  final Size? size;
+
   const CardSwiper({
     super.key,
-    required this.size,
+    required this.movies,
+    this.size,
   });
-
-  final Size size;
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = size ?? MediaQuery.of(context).size;
+
+    if (movies.isEmpty) {
+      return SizedBox(
+        width: double.infinity,
+        height: screenSize.height * 0.5,
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return SizedBox(
       width: double.infinity,
-      height: size.height * 0.5,
+      height: screenSize.height * 0.5,
       child: Swiper(
-        itemCount: 10,
-        itemHeight: size.height * 0.7,
-        itemWidth: size.width * 0.7,
+        itemCount: movies.length,
+        itemHeight: screenSize.height * 0.45,
+        itemWidth: screenSize.width * 0.7,
         layout: SwiperLayout.STACK,
         itemBuilder: (_, index) {
+          final movie = movies[index];
           return GestureDetector(
-            onTap: () {},
+            onTap: () => Navigator.pushNamed(
+              context,
+              'details',
+              arguments: movie,
+            ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: FadeInImage(
-                width: size.width,
-                height: size.height,
+                width: screenSize.width * 0.7,
+                height: screenSize.height * 0.45,
                 fit: BoxFit.cover,
                 placeholder: const AssetImage('assets/no-image.jpeg'),
-                image: const NetworkImage('https://picsum.photos/300/400'),
+                image: NetworkImage(movie.fullPosterImg),
               ),
             ),
           );
