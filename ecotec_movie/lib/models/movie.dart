@@ -1,114 +1,52 @@
 import 'dart:convert';
 
-import 'package:ecotec_movie/models/movie_model.dart';
-
 class Movie {
-    bool? adult;
-    String? backdropPath;
-    List<int>? genreIds;
-    int? id;
-    String? title;
-    OriginalLanguage? originalLanguage;
-    String? originalTitle;
-    String? overview;
-    double? popularity;
-    String? posterPath;
-    DateTime? releaseDate;
-    bool? softcore;
-    bool? video;
-    double? voteAverage;
-    int? voteCount;
+  final int id;
+  final String title;
+  final String overview;
+  final String? posterPath;
+  final double voteAverage;
+  final String releaseDate;
 
-    Movie({
-        this.adult,
-        this.backdropPath,
-        this.genreIds,
-        this.id,
-        this.title,
-        this.originalLanguage,
-        this.originalTitle,
-        this.overview,
-        this.popularity,
-        this.posterPath,
-        this.releaseDate,
-        this.softcore,
-        this.video,
-        this.voteAverage,
-        this.voteCount,
-    });
+  Movie({
+    required this.id,
+    required this.title,
+    required this.overview,
+    this.posterPath,
+    required this.voteAverage,
+    required this.releaseDate,
+  });
 
-    Movie copyWith({
-        bool? adult,
-        String? backdropPath,
-        List<int>? genreIds,
-        int? id,
-        String? title,
-        OriginalLanguage? originalLanguage,
-        String? originalTitle,
-        String? overview,
-        double? popularity,
-        String? posterPath,
-        DateTime? releaseDate,
-        bool? softcore,
-        bool? video,
-        double? voteAverage,
-        int? voteCount,
-    }) => 
-        Movie(
-            adult: adult ?? this.adult,
-            backdropPath: backdropPath ?? this.backdropPath,
-            genreIds: genreIds ?? this.genreIds,
-            id: id ?? this.id,
-            title: title ?? this.title,
-            originalLanguage: originalLanguage ?? this.originalLanguage,
-            originalTitle: originalTitle ?? this.originalTitle,
-            overview: overview ?? this.overview,
-            popularity: popularity ?? this.popularity,
-            posterPath: posterPath ?? this.posterPath,
-            releaseDate: releaseDate ?? this.releaseDate,
-            softcore: softcore ?? this.softcore,
-            video: video ?? this.video,
-            voteAverage: voteAverage ?? this.voteAverage,
-            voteCount: voteCount ?? this.voteCount,
-        );
+  /// Getter que devuelve la URL completa del póster en TMDB o una imagen alternativa de respaldo
+  String get fullPosterImg {
+    if (posterPath != null && posterPath!.isNotEmpty) {
+      return 'https://image.tmdb.org/t/p/w500$posterPath';
+    }
+    return 'https://i.stack.imgur.com/GNhxO.png';
+  }
 
-    factory Movie.fromRawJson(String str) => Movie.fromJson(json.decode(str));
+  /// Alias de conveniencia para acceder a la URL completa del póster
+  String get fullPosterUrl => fullPosterImg;
 
-    String toRawJson() => json.encode(toJson());
+  factory Movie.fromRawJson(String str) => Movie.fromJson(json.decode(str));
 
-    factory Movie.fromJson(Map<String, dynamic> json) => Movie(
-        adult: json["adult"],
-        backdropPath: json["backdrop_path"],
-        genreIds: json["genre_ids"] == null ? [] : List<int>.from(json["genre_ids"]!.map((x) => x)),
-        id: json["id"],
-        title: json["title"],
-        originalLanguage: originalLanguageValues.map[json["original_language"]],
-        originalTitle: json["original_title"],
-        overview: json["overview"],
-        popularity: json["popularity"]?.toDouble(),
-        posterPath: json["poster_path"],
-        releaseDate: json["release_date"] == null ? null : DateTime.parse(json["release_date"]),
-        softcore: json["softcore"],
-        video: json["video"],
-        voteAverage: json["vote_average"]?.toDouble(),
-        voteCount: json["vote_count"],
-    );
+  String toRawJson() => json.encode(toJson());
 
-    Map<String, dynamic> toJson() => {
-        "adult": adult,
-        "backdrop_path": backdropPath,
-        "genre_ids": genreIds == null ? [] : List<dynamic>.from(genreIds!.map((x) => x)),
-        "id": id,
-        "title": title,
-        "original_language": originalLanguageValues.reverse[originalLanguage],
-        "original_title": originalTitle,
-        "overview": overview,
-        "popularity": popularity,
-        "poster_path": posterPath,
-        "release_date": releaseDate == null ? null : "${releaseDate!.year.toString().padLeft(4, '0')}-${releaseDate!.month.toString().padLeft(2, '0')}-${releaseDate!.day.toString().padLeft(2, '0')}",
-        "softcore": softcore,
-        "video": video,
-        "vote_average": voteAverage,
-        "vote_count": voteCount,
-    };
+  factory Movie.fromJson(Map<String, dynamic> json) => Movie(
+        id: json['id'] as int,
+        title: json['title'] as String? ?? '',
+        overview: json['overview'] as String? ?? '',
+        posterPath: json['poster_path'] as String?,
+        voteAverage: (json['vote_average'] as num?)?.toDouble() ?? 0.0,
+        releaseDate: json['release_date'] as String? ?? '',
+      );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'overview': overview,
+        'poster_path': posterPath,
+        'vote_average': voteAverage,
+        'release_date': releaseDate,
+      };
 }

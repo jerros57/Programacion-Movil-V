@@ -1,52 +1,37 @@
-
-
-
-import 'package:ecotec_movie/models/movie.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:ecotec_movie/models/models.dart';
 
-import '../models/movie_model.dart';
+class MoviesProvider extends ChangeNotifier {
+  final String _apiKey = '5bd32ef97e1568a8582ee4c212d5c25c';
+  final String _baseUrl = 'api.themoviedb.org';
+  final String _language = 'es-ES';
 
-class MoviesProvider extends ChangeNotifier{
+  List<Movie> onDisplayMovie = [];
 
-  String _apiKey='5bd32ef97e1568a8582ee4c212d5c25c';
-  String _baseUrl='api.themoviedb.org';
-  String _language='es-ES';
-List<Movie> onDisplayMovie=[];
-
-
-  MoviesProvider(){
+  MoviesProvider() {
     debugPrint('Movies Provider Inicializado');
-    getOnDIsplayMovies();
+    getOnDisplayMovies();
   }
 
+  Future<void> getOnDisplayMovies() async {
+    final url = Uri.https(_baseUrl, '3/movie/now_playing', {
+      'api_key': _apiKey,
+      'language': _language,
+      'page': '1',
+    });
 
-Future<void> getOnDIsplayMovies() async
-{
-
-  debugPrint('getOnDisplayMovies');
-  var url=Uri.https(_baseUrl,'3/movie/now_playing',{
-    'api_key':_apiKey,
-    'language':_language,
-    'page':'1'
-  });
-
-  final response = await http.get(url);
-final nowPlayingResponse= NowPlayingResponse.fromRawJson(response.body);
-onDisplayMovie=nowPlayingResponse.results!;
-debugPrint(nowPlayingResponse.results![2].title);
-notifyListeners();
-
- // final decodeData= json.decode(response.body);
-
-//final Map<String, dynamic> decodeData=json.decode(response.body);
-
-
-  //debugPrint(decodeData['dates']['maximum']);
-
-
-
-} //Final de getOnDisplayMovie
-
-
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final nowPlayingResponse = NowPlayingResponse.fromRawJson(response.body);
+        onDisplayMovie = nowPlayingResponse.results;
+        notifyListeners();
+      } else {
+        debugPrint('Error en la petición: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('Excepción al obtener películas: $e');
+    }
+  }
 }

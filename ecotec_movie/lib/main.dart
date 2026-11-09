@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/movies_provider.dart';
-import 'screens/home_screen.dart';
+import 'package:ecotec_movie/providers/movies_provider.dart';
+import 'package:ecotec_movie/screens/details_screen.dart';
+import 'package:ecotec_movie/screens/home_screen.dart';
 
-void main() {
-  runApp(const AppState());
-}
-
+void main() => runApp(const AppState());
 
 class AppState extends StatelessWidget {
   const AppState({super.key});
@@ -14,17 +12,16 @@ class AppState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_)=>MoviesProvider(),lazy: false,)],
-      child: MyApp(),
-    
-    
-    
+      providers: [
+        ChangeNotifierProvider(create: (_) => MoviesProvider(), lazy: false),
+      ],
+      child: const MyApp(),
     );
   }
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +31,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
+      routes: {
+        'details': (context) => const DetailsScreen(),
+      },
     );
   }
 }
