@@ -1,7 +1,4 @@
 import 'package:ecotec_app/routes/app_routes.dart';
-import 'package:ecotec_app/screens/forms_screen.dart';
-import 'package:ecotec_app/screens/imagenes_screen.dart';
-import 'package:ecotec_app/screens/texto_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {

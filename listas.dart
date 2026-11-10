@@ -4,7 +4,7 @@ void main()
   String variable2='';
   int numero1=0;
   
-  print('Esto es un numero $variable1 ');
+  print('Esto es un numero $variable1 $variable2 $numero1');
   
   
   // Listas-index  0,1,2,3,4,5   

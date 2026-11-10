@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:ecotec_movie/providers/movies_provider.dart';
 import 'package:ecotec_movie/screens/widgets/card_swiper.dart';
 import 'package:ecotec_movie/screens/widgets/movie_slider.dart';
+import 'package:ecotec_movie/search/search_delegate.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,18 +14,38 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Películas en Cines'),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.local_movies_rounded, color: Colors.amber),
+            const SizedBox(width: 8),
+            const Text(
+              'ECOTEC Cine',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        ),
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.search_outlined),
-            onPressed: () {},
+            icon: const Icon(Icons.search_rounded, size: 26),
+            tooltip: 'Buscar películas',
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: MovieSearchDelegate(),
+              );
+            },
           ),
         ],
       ),
       body: RefreshIndicator(
+        color: Colors.amber,
         onRefresh: () async {
-          await moviesProvider.getOnDisplayMovies();
+          await moviesProvider.refreshAll();
         },
         child: _buildBody(context, moviesProvider),
       ),
@@ -44,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircularProgressIndicator(),
+                      CircularProgressIndicator(color: Colors.amber),
                       SizedBox(height: 20),
                       Text(
                         'Cargando cartelera...',
@@ -88,19 +109,22 @@ class HomeScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 16,
-                            color: Colors.black87,
+                            color: Colors.white70,
                           ),
                         ),
                         const SizedBox(height: 24),
                         ElevatedButton.icon(
-                          onPressed: () => provider.getOnDisplayMovies(),
+                          onPressed: () => provider.refreshAll(),
                           icon: const Icon(Icons.refresh_rounded),
                           label: const Text('Reintentar'),
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.amber,
+                            foregroundColor: Colors.black,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 24,
                               vertical: 12,
                             ),
+                            textStyle: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -116,14 +140,28 @@ class HomeScreen extends StatelessWidget {
         return SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 10),
-              // Tarjetas principales (Swiper)
+              const SizedBox(height: 14),
+              // Carrusel de tarjetas principales destacadas (Swiper)
               CardSwiper(movies: provider.onDisplayMovies),
               const SizedBox(height: 20),
-              // Slider horizontal de películas
-              MovieSlider(movies: provider.onDisplayMovies),
-              const SizedBox(height: 20),
+              // Sección de Próximos Estrenos con fecha destacada
+              if (provider.upcomingMovies.isNotEmpty) ...[
+                MovieSlider(
+                  movies: provider.upcomingMovies,
+                  title: 'Próximos Estrenos',
+                  isUpcoming: true,
+                ),
+                const SizedBox(height: 15),
+              ],
+              // Sección de Populares en Cartelera
+              MovieSlider(
+                movies: provider.onDisplayMovies,
+                title: 'Populares en Cartelera',
+                isUpcoming: false,
+              ),
+              const SizedBox(height: 30),
             ],
           ),
         );

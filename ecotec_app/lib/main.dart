@@ -1,5 +1,4 @@
 import 'package:ecotec_app/routes/app_routes.dart';
-import 'package:ecotec_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
